@@ -14,14 +14,14 @@
     <body>
         <h1>Shopping List</h1>
         
-        <p>Hello, ${name} <a href="">Logout</a></p>
+        <p>Hello, ${username} <a href="ShoppingList?action=logout">Logout</a></p>
         
         <h2>List</h2>
         <form action="ShoppingList" method="post">
             <input type="hidden" name="action" value="add">
             
             <label for="item">Add item: </label>
-            <input type="text" name="item" id="item" />
+            <input type="text" name="item" id="item" required/>
             
             <button type="submit">Add</button>
         </form>
@@ -34,7 +34,9 @@
                     ${item}
                 </p>
             </c:forEach>
-            <button type="submit">Delete</button>
+            <c:if test="${items.size() != 0}">
+                <button type="submit">Delete</button>
+            </c:if>
         </form>
     </body>
 </html>

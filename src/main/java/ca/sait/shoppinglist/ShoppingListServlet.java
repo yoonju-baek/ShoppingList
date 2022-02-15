@@ -1,7 +1,6 @@
 package ca.sait.shoppinglist;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,13 +27,22 @@ public class ShoppingListServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         
-        String name = (String)session.getAttribute("name");
+        String username = (String)session.getAttribute("username");
         
-        if(name == null) {
+        if(username == null) {
             getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
         }
         else {
-            getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
+            String query = request.getQueryString();
+        
+            if(query != null && query.contains("logout")) {
+                session.invalidate();
+                
+                getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
+            }
+            else {
+                getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
+            }
         }
     }
 
@@ -70,18 +78,15 @@ public class ShoppingListServlet extends HttpServlet {
             items.remove(item);
             session.setAttribute("items", items);    
         }
-        else {
-            String name = request.getParameter("name");
+        else if(action != null && action.equals("register")) {
+            String username = request.getParameter("username");
 
             ArrayList<String> items = new ArrayList<>();
             
-            session.setAttribute("name", name);
+            session.setAttribute("username", username);
             session.setAttribute("items", items);
         }
         
         getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
-
-        
-        
     }
 }
